@@ -6,7 +6,9 @@ load '/getssl/test/test_helper.bash'
 
 
 setup() {
-    export CURL_CA_BUNDLE=/root/pebble-ca-bundle.crt
+    if [ -z "$STAGING" ]; then
+        export CURL_CA_BUNDLE=/root/pebble-ca-bundle.crt
+    fi
     if [ -f /usr/bin/host ]; then
         mv /usr/bin/host /usr/bin/host.getssl.bak
     fi
@@ -28,9 +30,6 @@ teardown() {
 
 @test "Create new certificate using DNS-01 verification (dig)" {
     CONFIG_FILE="getssl-dns01.cfg"
-    if [ -n "$STAGING" ]; then
-        CONFIG_FILE="getssl-staging-dns01.cfg"
-    fi
 
     setup_environment
     init_getssl

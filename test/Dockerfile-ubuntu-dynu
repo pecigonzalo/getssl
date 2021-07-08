@@ -7,13 +7,13 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Ensure tests in this image use the staging server
 ENV staging "true"
-ENV DUCKDNS_TOKEN 1d616aa9-b8e4-4bb4-b312-3289de82badb
+ENV dynamic_dns "dynu"
+ENV DYNU_API_KEY 65cXefd35XbYf36546eg5dYcZT6X52Y2
 
 # Update and install required software
 RUN apt-get update --fix-missing
-RUN apt-get install -y git curl dnsutils wget nginx-light
+RUN apt-get install -y git curl dnsutils ldnsutils wget nginx-light
 RUN apt-get install -y vim dos2unix # for debugging
-# TODO test with drill, dig, host
 
 WORKDIR /root
 
@@ -21,7 +21,7 @@ WORKDIR /root
 RUN touch /root/.rnd
 
 # BATS (Bash Automated Testings)
-RUN git clone https://github.com/bats-core/bats-core.git /bats-core
+RUN git clone https://github.com/bats-core/bats-core.git /bats-core --branch v1.2.1
 RUN git clone https://github.com/bats-core/bats-support /bats-support
 RUN git clone https://github.com/bats-core/bats-assert /bats-assert
 RUN /bats-core/install.sh /usr/local

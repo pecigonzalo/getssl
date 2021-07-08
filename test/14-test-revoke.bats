@@ -7,13 +7,15 @@ load '/getssl/test/test_helper.bash'
 
 # This is run for every test
 setup() {
-    export CURL_CA_BUNDLE=/root/pebble-ca-bundle.crt
+    if [ -z "$STAGING" ]; then
+        export CURL_CA_BUNDLE=/root/pebble-ca-bundle.crt
+    fi
 }
 
 
 @test "Create certificate to check revoke" {
     if [ -n "$STAGING" ]; then
-        CONFIG_FILE="getssl-staging-dns01.cfg"
+        CONFIG_FILE="getssl-dns01.cfg"
     else
         CONFIG_FILE="getssl-http01.cfg"
     fi
@@ -28,7 +30,7 @@ setup() {
 
 @test "Check we can revoke a certificate" {
     if [ -n "$STAGING" ]; then
-        CONFIG_FILE="getssl-staging-dns01.cfg"
+        CONFIG_FILE="getssl-dns01.cfg"
     else
         CONFIG_FILE="getssl-http01.cfg"
     fi
@@ -38,5 +40,5 @@ setup() {
 
     run ${CODE_DIR}/getssl -d --revoke $CERT $KEY $CA
     assert_success
-    check_output_for_errors
+    check_output_for_errors "debug"
 }
